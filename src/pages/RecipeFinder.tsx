@@ -1,6 +1,5 @@
-
 import React, { useState, useRef } from 'react';
-import { ChefHat, Plus, X, Loader2, RefreshCw } from 'lucide-react';
+import { ChefHat, Plus, X, Loader2, RefreshCw, Clock, Utensils } from 'lucide-react';
 import { toast } from '@/components/ui/sonner';
 
 interface Recipe {
@@ -10,6 +9,9 @@ interface Recipe {
   cookingTime: string;
   servings: number;
 }
+
+const GEMINI_API_KEY = "YOUR_GEMINI_API_KEY"; // Replace with your actual API key
+const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent";
 
 const RecipeFinder = () => {
   const [ingredients, setIngredients] = useState<string[]>([]);
@@ -47,9 +49,61 @@ const RecipeFinder = () => {
     setRecipe(null);
 
     try {
-      // This is a mock response - in a real app, this would call the Gemini API
+      const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                {
+                  text: `Create a recipe using these ingredients: ${ingredients.join(', ')}. 
+                  Return the response in JSON format with the following structure:
+                  {
+                    "title": "Recipe Title",
+                    "ingredients": ["ingredient 1 - quantity", "ingredient 2 - quantity"],
+                    "instructions": ["step 1", "step 2", "step 3"],
+                    "cookingTime": "15 minutes",
+                    "servings": 2
+                  }`
+                }
+              ]
+            }
+          ],
+          generationConfig: {
+            temperature: 0.7,
+            topK: 40,
+            topP: 0.95,
+            maxOutputTokens: 1024,
+          }
+        })
+      });
+
+      if (!response.ok) {
+        console.error('Gemini API error:', response.statusText);
+        throw new Error('Failed to generate recipe');
+      }
+
+      const data = await response.json();
+      const generatedText = data.candidates[0].content.parts[0].text;
+      
+      const jsonMatch = generatedText.match(/\{[\s\S]*\}/);
+      
+      if (jsonMatch) {
+        const parsedRecipe = JSON.parse(jsonMatch[0]);
+        setRecipe(parsedRecipe);
+      } else {
+        throw new Error('Could not parse recipe from API response');
+      }
+      
+      setIsGenerating(false);
+      
+    } catch (error) {
+      console.error('Error generating recipe:', error);
+      
       setTimeout(() => {
-        // Simulate API response delay
         const mockRecipe = {
           title: `${ingredients[0].charAt(0).toUpperCase() + ingredients[0].slice(1)} and ${ingredients[1]} Delight`,
           ingredients: [
@@ -72,21 +126,8 @@ const RecipeFinder = () => {
         
         setRecipe(mockRecipe);
         setIsGenerating(false);
+        toast.error('Failed to generate recipe from AI. Using fallback recipe instead.');
       }, 2000);
-      
-      // In real implementation, we would call the Gemini API:
-      // const response = await fetch('/api/generate-recipe', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ ingredients })
-      // });
-      // const data = await response.json();
-      // setRecipe(data.recipe);
-      
-    } catch (error) {
-      console.error('Error generating recipe:', error);
-      toast.error('Failed to generate recipe. Please try again.');
-      setIsGenerating(false);
     }
   };
 
@@ -200,7 +241,7 @@ const RecipeFinder = () => {
                   {recipe.cookingTime}
                 </div>
                 <div className="flex items-center">
-                  <UtensilsCrossed className="h-4 w-4 mr-1" />
+                  <Utensils className="h-4 w-4 mr-1" />
                   {recipe.servings} servings
                 </div>
               </div>
