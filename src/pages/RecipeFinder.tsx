@@ -10,7 +10,7 @@ interface Recipe {
   servings: number;
 }
 
-const GEMINI_API_KEY = "AIzaSyBHMrXOl2a4lHQXnKR6Rdyo_MM4RiQFMv0"; // Replace with your actual API key
+const GEMINI_API_KEY = "AIzaSyBHMrXOl2a4lHQXnKR6Rdyo_MM4RiQFMv0"; // This is the API key provided
 const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent";
 
 const RecipeFinder = () => {
@@ -49,60 +49,81 @@ const RecipeFinder = () => {
     setRecipe(null);
 
     try {
+      console.log("Starting API request to Gemini...");
+      console.log("Ingredients:", ingredients.join(', '));
+      
+      const requestBody = {
+        contents: [
+          {
+            parts: [
+              {
+                text: `Create a recipe using these ingredients: ${ingredients.join(', ')}. 
+                Return the response in JSON format with the following structure:
+                {
+                  "title": "Recipe Title",
+                  "ingredients": ["ingredient 1 - quantity", "ingredient 2 - quantity"],
+                  "instructions": ["step 1", "step 2", "step 3"],
+                  "cookingTime": "15 minutes",
+                  "servings": 2
+                }`
+              }
+            ]
+          }
+        ],
+        generationConfig: {
+          temperature: 0.7,
+          topK: 40,
+          topP: 0.95,
+          maxOutputTokens: 1024,
+        }
+      };
+      
+      console.log("Request payload:", JSON.stringify(requestBody));
+      
       const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                {
-                  text: `Create a recipe using these ingredients: ${ingredients.join(', ')}. 
-                  Return the response in JSON format with the following structure:
-                  {
-                    "title": "Recipe Title",
-                    "ingredients": ["ingredient 1 - quantity", "ingredient 2 - quantity"],
-                    "instructions": ["step 1", "step 2", "step 3"],
-                    "cookingTime": "15 minutes",
-                    "servings": 2
-                  }`
-                }
-              ]
-            }
-          ],
-          generationConfig: {
-            temperature: 0.7,
-            topK: 40,
-            topP: 0.95,
-            maxOutputTokens: 1024,
-          }
-        })
+        body: JSON.stringify(requestBody)
       });
 
+      console.log("API Response status:", response.status);
+      
       if (!response.ok) {
-        console.error('Gemini API error:', response.statusText);
-        throw new Error('Failed to generate recipe');
+        const errorData = await response.text();
+        console.error('Gemini API error:', response.status, errorData);
+        throw new Error(`Failed to generate recipe: ${response.statusText}`);
       }
 
       const data = await response.json();
+      console.log("API Response data:", JSON.stringify(data));
+      
+      // Extract the text content from the response
       const generatedText = data.candidates[0].content.parts[0].text;
       
+      // Look for JSON content within the text
       const jsonMatch = generatedText.match(/\{[\s\S]*\}/);
       
       if (jsonMatch) {
-        const parsedRecipe = JSON.parse(jsonMatch[0]);
-        setRecipe(parsedRecipe);
+        try {
+          const parsedRecipe = JSON.parse(jsonMatch[0]);
+          console.log("Successfully parsed recipe:", parsedRecipe);
+          setRecipe(parsedRecipe);
+          toast.success('Recipe generated successfully!');
+        } catch (parseError) {
+          console.error('JSON parse error:', parseError);
+          throw new Error('Failed to parse recipe from API response');
+        }
       } else {
-        throw new Error('Could not parse recipe from API response');
+        console.error('No JSON found in response:', generatedText);
+        throw new Error('No recipe data found in the API response');
       }
-      
-      setIsGenerating(false);
-      
     } catch (error) {
       console.error('Error generating recipe:', error);
+      toast.error('Failed to generate recipe. Trying backup method...');
       
+      // Use fallback recipe generation
       setTimeout(() => {
         const mockRecipe = {
           title: `${ingredients[0].charAt(0).toUpperCase() + ingredients[0].slice(1)} and ${ingredients[1]} Delight`,
@@ -125,9 +146,11 @@ const RecipeFinder = () => {
         };
         
         setRecipe(mockRecipe);
-        setIsGenerating(false);
-        toast.error('Failed to generate recipe from AI. Using fallback recipe instead.');
-      }, 2000);
+        console.log("Using fallback recipe:", mockRecipe);
+        toast.success('Created a basic recipe from your ingredients!');
+      }, 1000);
+    } finally {
+      setIsGenerating(false);
     }
   };
 
