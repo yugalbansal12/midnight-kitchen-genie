@@ -5,33 +5,33 @@
 
 @layer base {
   :root {
-    --background: 210 30% 8%;
-    --foreground: 210 20% 98%;
+    --background: 45 25% 95%;
+    --foreground: 60 4% 18%;
 
-    --card: 215 28% 10%;
-    --card-foreground: 210 20% 98%;
+    --card: 40 20% 90%;
+    --card-foreground: 60 4% 18%;
 
-    --popover: 215 28% 10%;
-    --popover-foreground: 210 20% 98%;
+    --popover: 40 20% 90%;
+    --popover-foreground: 60 4% 18%;
 
-    --primary: 210 100% 56%;
-    --primary-foreground: 210 20% 98%;
+    --primary: 71 25% 45%;
+    --primary-foreground: 45 25% 98%;
 
-    --secondary: 215 28% 17%;
-    --secondary-foreground: 210 20% 98%;
+    --secondary: 36 18% 80%;
+    --secondary-foreground: 60 4% 18%;
 
-    --muted: 215 28% 17%;
-    --muted-foreground: 210 20% 60%;
+    --muted: 36 18% 80%;
+    --muted-foreground: 60 8% 35%;
 
-    --accent: 210 100% 40%;
-    --accent-foreground: 210 20% 98%;
+    --accent: 71 15% 56%;
+    --accent-foreground: 45 25% 98%;
 
     --destructive: 0 84% 60%;
-    --destructive-foreground: 210 20% 98%;
+    --destructive-foreground: 45 25% 98%;
 
-    --border: 215 28% 17%;
-    --input: 215 28% 17%;
-    --ring: 210 100% 56%;
+    --border: 36 18% 80%;
+    --input: 36 18% 80%;
+    --ring: 71 25% 45%;
 
     --radius: 0.5rem;
   }
@@ -42,18 +42,18 @@
     @apply border-border;
   }
   body {
-    @apply bg-recipe-darker text-foreground;
+    @apply bg-recipe-light text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
 
 @layer components {
   .glass-panel {
-    @apply bg-opacity-20 bg-recipe-dark backdrop-filter backdrop-blur-lg border border-opacity-20 border-white;
+    @apply bg-opacity-20 bg-recipe-secondary backdrop-filter backdrop-blur-lg border border-opacity-20 border-white;
   }
   
   .shimmer {
-    @apply relative overflow-hidden bg-gray-800 bg-opacity-20;
+    @apply relative overflow-hidden bg-recipe-secondary bg-opacity-20;
   }
   
   .shimmer::before {
@@ -64,7 +64,7 @@
   }
   
   .recipe-card {
-    @apply bg-recipe-dark rounded-lg p-6 transition-all duration-300 hover:shadow-lg hover:shadow-recipe-primary/10;
+    @apply bg-recipe-secondary rounded-lg p-6 transition-all duration-300 hover:shadow-lg hover:shadow-recipe-primary/10;
   }
   
   .recipe-card img {

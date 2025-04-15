@@ -64,12 +64,12 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				recipe: {
-					primary: '#1E90FF',
-					secondary: '#4169E1',
-					accent: '#00BFFF',
-					dark: '#0A1929',
-					darker: '#06111D',
-					light: '#E0F7FF',
+					primary: '#7D8C5B', // olive
+					secondary: '#D8CDBF', // light beige
+					accent: '#A2A878', // sage green (olive variant)
+					dark: '#4A4F41', // dark olive
+					darker: '#2D302A', // very dark olive
+					light: '#F5F2ED', // off-white/beige
 				}
 			},
 			borderRadius: {
@@ -111,7 +111,7 @@ export default {
 			},
 			backgroundImage: {
 				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-				'hero-pattern': 'linear-gradient(to bottom, rgba(10, 25, 41, 0.95), rgba(6, 17, 29, 0.98))',
+				'hero-pattern': 'linear-gradient(to bottom, rgba(74, 79, 65, 0.95), rgba(45, 48, 42, 0.98))',
 			}
 		}
 	},

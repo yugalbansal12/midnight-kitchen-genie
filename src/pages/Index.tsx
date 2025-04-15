@@ -7,15 +7,15 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Hero Section */}
-      <section className="flex-1 flex flex-col lg:flex-row items-center bg-recipe-dark bg-hero-pattern bg-cover py-16 lg:py-32 px-6">
+      <section className="flex-1 flex flex-col lg:flex-row items-center bg-recipe-secondary bg-opacity-30 py-16 lg:py-32 px-6">
         <div className="container max-w-7xl mx-auto flex flex-col lg:flex-row items-center">
           <div className="lg:w-1/2 space-y-8">
             <div className="space-y-2">
-              <h1 className="text-4xl md:text-5xl font-bold text-white">
+              <h1 className="text-4xl md:text-5xl font-bold text-recipe-dark">
                 <span className="text-recipe-primary">AI-Powered</span> Recipe Maker <br />
                 for Midnight Cravings
               </h1>
-              <p className="text-lg text-gray-300 max-w-xl">
+              <p className="text-lg text-recipe-dark/80 max-w-xl">
                 Transform your available ingredients into delicious recipes with our AI chef. 
                 No more food waste, just creative cooking.
               </p>
@@ -36,7 +36,7 @@ const Index = () => {
             <div className="relative">
               <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-recipe-primary to-recipe-accent opacity-70 blur-lg"></div>
               <div className="relative glass-panel rounded-full p-1">
-                <div className="bg-recipe-darker rounded-full p-8">
+                <div className="bg-white rounded-full p-8">
                   <ChefHat className="w-48 h-48 text-recipe-primary" />
                 </div>
               </div>
@@ -46,13 +46,13 @@ const Index = () => {
       </section>
       
       {/* Features Section */}
-      <section className="py-16 px-6 bg-recipe-darker">
+      <section className="py-16 px-6 bg-white">
         <div className="container max-w-7xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-3xl font-bold text-white mb-4">
+            <h2 className="text-3xl font-bold text-recipe-dark mb-4">
               Cooking Made Intelligent
             </h2>
-            <p className="text-gray-300">
+            <p className="text-recipe-dark/80">
               Our platform combines AI technology with culinary expertise to deliver
               personalized recipe recommendations based on what you have.
             </p>
@@ -76,10 +76,10 @@ const Index = () => {
                 description: "Get recipes that match your time constraints, from 15-minute meals to slow-cooked feasts."
               }
             ].map((feature, index) => (
-              <div key={index} className="bg-recipe-dark rounded-lg p-6 glass-panel">
+              <div key={index} className="bg-recipe-secondary/40 rounded-lg p-6 border border-recipe-secondary shadow-sm hover:shadow-md transition-all duration-300">
                 <div className="mb-4">{feature.icon}</div>
-                <h3 className="text-xl font-semibold text-white mb-2">{feature.title}</h3>
-                <p className="text-gray-300">{feature.description}</p>
+                <h3 className="text-xl font-semibold text-recipe-dark mb-2">{feature.title}</h3>
+                <p className="text-recipe-dark/80">{feature.description}</p>
               </div>
             ))}
           </div>
@@ -87,12 +87,12 @@ const Index = () => {
       </section>
       
       {/* Call to Action */}
-      <section className="py-16 px-6 bg-gradient-to-br from-recipe-dark to-recipe-darker border-t border-gray-800">
+      <section className="py-16 px-6 bg-gradient-to-br from-recipe-primary/10 to-recipe-secondary/30 border-t border-recipe-secondary">
         <div className="container max-w-5xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">
+          <h2 className="text-3xl font-bold text-recipe-dark mb-4">
             Ready to Cook Something Amazing?
           </h2>
-          <p className="text-gray-300 mb-8 max-w-2xl mx-auto">
+          <p className="text-recipe-dark/80 mb-8 max-w-2xl mx-auto">
             Stop wondering what to make with your ingredients. 
             Let our AI chef inspire your next culinary masterpiece.
           </p>
